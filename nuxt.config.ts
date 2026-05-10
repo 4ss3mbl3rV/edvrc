@@ -19,6 +19,13 @@ export default defineNuxtConfig({
             'Personal portfolio of a cybersecurity professional specializing in digital forensics, offensive security, and blue team operations.',
         },
       ],
+      // Runs synchronously before first paint — prevents dark→light flash in SSG
+      script: [
+        {
+          innerHTML: `(function(){try{var c=document.cookie.split(';').find(function(s){return s.trim().startsWith('portfolio-theme=')});var t=c?c.split('=')[1].trim():(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})()`,
+          tagPriority: 'critical',
+        },
+      ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
