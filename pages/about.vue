@@ -73,15 +73,18 @@
 <script setup lang="ts">
 useHead({ title: 'About | Vilaysack Vorachack' })
 
-const { data: certData } = await useAsyncData('cert-count', () =>
-  queryContent('data/certifications').findOne()
-)
-const { data: contribData } = await useAsyncData('contrib-count', () =>
-  queryContent('data/contributions').findOne()
-)
+const client = useSupabaseClient()
 
-const certCount = computed(() => certData.value?.certifications?.length ?? 0)
-const contribCount = computed(() => contribData.value?.contributions?.length ?? 0)
+const { data: counts } = await useAsyncData('about-counts', async () => {
+  const [certs, contribs] = await Promise.all([
+    client.from('certifications').select('*', { count: 'exact', head: true }),
+    client.from('contributions').select('*', { count: 'exact', head: true }),
+  ])
+  return { certCount: certs.count ?? 0, contribCount: contribs.count ?? 0 }
+})
+
+const certCount = computed(() => counts.value?.certCount ?? 0)
+const contribCount = computed(() => counts.value?.contribCount ?? 0)
 
 const tags = ['Leadership', 'DFIR', 'Threat Hunting', 'Threat Intelligence', 'Offensive Security', 'Blue Team Operations', 'Continuous Learner', 'Team Player', 'Mentor']
 </script>

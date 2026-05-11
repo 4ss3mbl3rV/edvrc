@@ -11,8 +11,15 @@
   },
   "dependencies": {
     "@nuxt/content": "^2.13.4",
+    "@nuxtjs/supabase": "^2.0.6",
+    "@tiptap/extension-image": "^3.23.1",
+    "@tiptap/starter-kit": "^3.23.1",
+    "@tiptap/vue-3": "^3.23.1",
+    "marked": "^18.0.3",
     "nuxt": "^3.16.2",
+    "tiptap-markdown": "^0.9.0",
     "vue": "^3.5.13",
+    "vue-draggable-plus": "^0.6.1",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {

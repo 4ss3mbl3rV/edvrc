@@ -16,47 +16,45 @@
           <NuxtLink to="/blog" class="blog-back-link">&larr; Back to Blog</NuxtLink>
           <h1 class="blog-post-title">{{ post.title }}</h1>
           <div class="blog-post-meta">
-            <span class="blog-post-date">{{ post.date }}</span>
-            <span class="blog-post-read-time">{{ post.readTime }}</span>
+            <span class="blog-post-date">{{ formattedDate }}</span>
           </div>
         </header>
 
-        <div class="blog-post-body" v-html="post.content" />
+        <div class="blog-post-body" v-html="renderedContent" />
       </article>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { marked } from 'marked'
+
 const route = useRoute()
+const client = useSupabaseClient()
 
 const { data: post, pending } = await useAsyncData(`blog-post-${route.params.slug}`, async () => {
-  const MEDIUM_USERNAME = 'vvilaysack'
-  const RSS2JSON = 'https://api.rss2json.com/v1/api.json'
-
-  const res = await $fetch<any>(`${RSS2JSON}?rss_url=https://medium.com/feed/@${MEDIUM_USERNAME}`)
-  if (res.status !== 'ok') return null
-
-  const slug = route.params.slug as string
-  const item = res.items.find((i: any) => {
-    const itemSlug = i.link.split('/').pop()?.split('?')[0] ?? ''
-    return itemSlug === slug
-  })
-
-  if (!item) return null
-
-  return {
-    title: item.title,
-    url: item.link,
-    date: new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-    readTime: `${Math.ceil((item.content?.split(' ').length ?? 500) / 200)} min read`,
-    content: item.content,
-  }
+  const { data } = await client
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', route.params.slug as string)
+    .eq('published', true)
+    .single()
+  return data ?? null
 })
 
 useHead({
   title: computed(() => post.value ? `${post.value.title} | Vilaysack Vorachack` : 'Blog | Vilaysack Vorachack'),
 })
+
+const formattedDate = computed(() =>
+  post.value?.published_at
+    ? new Date(post.value.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    : ''
+)
+
+const renderedContent = computed(() =>
+  post.value?.content ? marked(post.value.content) : ''
+)
 </script>
 
 <style scoped>
@@ -75,9 +73,7 @@ useHead({
   transition: opacity 0.2s ease;
 }
 
-.blog-back-link:hover {
-  opacity: 0.75;
-}
+.blog-back-link:hover { opacity: 0.75; }
 
 .blog-post-title {
   font-family: var(--font-display);
@@ -94,47 +90,22 @@ useHead({
   font-size: 0.875rem;
   margin-bottom: 2.5rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
 }
 
-.blog-post-body {
-  color: var(--text-secondary);
-  line-height: 1.8;
-  font-size: 1rem;
-}
-
+.blog-post-body { color: var(--text-secondary); line-height: 1.8; font-size: 1rem; font-family: var(--font-content); }
 .blog-post-body :deep(h2),
-.blog-post-body :deep(h3) {
-  color: var(--text-primary);
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
-}
-
+.blog-post-body :deep(h3) { color: var(--text-primary); margin-top: 2rem; margin-bottom: 0.75rem; }
 .blog-post-body :deep(pre) {
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 1.25rem;
   overflow-x: auto;
   font-family: var(--font-mono);
   font-size: 0.875rem;
 }
-
-.blog-post-body :deep(code) {
-  font-family: var(--font-mono);
-  font-size: 0.875em;
-  color: var(--accent-primary);
-}
-
-.blog-post-body :deep(a) {
-  color: var(--accent-primary);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.blog-post-body :deep(img) {
-  max-width: 100%;
-  border-radius: 8px;
-  margin: 1.5rem 0;
-}
+.blog-post-body :deep(code) { font-family: var(--font-mono); font-size: 0.875em; color: var(--accent-primary); }
+.blog-post-body :deep(a) { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 3px; }
+.blog-post-body :deep(img) { max-width: 100%; border-radius: 8px; margin: 1.5rem 0; }
 </style>

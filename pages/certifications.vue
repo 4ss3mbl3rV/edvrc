@@ -35,11 +35,17 @@
 <script setup lang="ts">
 useHead({ title: 'Certifications | Vilaysack Vorachack' })
 
-const { data, pending } = await useAsyncData('certifications', () =>
-  queryContent('data/certifications').findOne()
-)
+const client = useSupabaseClient()
 
-const certifications = computed(() => data.value?.certifications ?? [])
+const { data, pending } = await useAsyncData('certifications', async () => {
+  const { data } = await client
+    .from('certifications')
+    .select('*')
+    .order('sort_order', { ascending: true })
+  return data ?? []
+})
+
+const certifications = computed(() => data.value ?? [])
 const categories = computed(() => [...new Set(certifications.value.map((c: any) => c.category || 'General'))])
 
 const activeFilter = ref('all')

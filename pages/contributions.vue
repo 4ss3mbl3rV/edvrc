@@ -19,8 +19,8 @@
       <div v-else class="contributions-grid">
         <ContributionCard
           v-for="(item, i) in contributions"
-          :key="item.name"
-          :item="item"
+          :key="item.id"
+          :item="toContributionItem(item)"
           :delay="0.1 + i * 0.1"
         />
       </div>
@@ -31,9 +31,24 @@
 <script setup lang="ts">
 useHead({ title: 'Contributions | Vilaysack Vorachack' })
 
-const { data, pending, error } = await useAsyncData('contributions', () =>
-  queryContent('data/contributions').findOne()
-)
+const client = useSupabaseClient()
 
-const contributions = computed(() => data.value?.contributions ?? [])
+const { data, pending, error } = await useAsyncData('contributions', async () => {
+  const { data } = await client
+    .from('contributions')
+    .select('*')
+    .order('sort_order', { ascending: true })
+  return data ?? []
+})
+
+const contributions = computed(() => data.value ?? [])
+
+// Map Supabase flat columns → ContributionCard's expected shape
+const toContributionItem = (row: any) => ({
+  ...row,
+  links: {
+    github: row.github_url ?? undefined,
+    demo: row.demo_url ?? undefined,
+  },
+})
 </script>

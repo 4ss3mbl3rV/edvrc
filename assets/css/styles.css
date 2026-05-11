@@ -44,6 +44,8 @@
     --font-mono: 'JetBrains Mono', monospace;
     --font-body: 'Space Grotesk', sans-serif;
     --font-lao: 'Noto Sans Lao Looped', sans-serif;
+    --font-thai: 'Chakra Petch', sans-serif;
+    --font-content: 'Space Grotesk', 'Noto Sans Lao Looped', 'Chakra Petch', sans-serif;
 }
 
 [data-theme="light"] {

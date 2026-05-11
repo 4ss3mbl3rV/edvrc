@@ -13,14 +13,14 @@
       </div>
 
       <div v-else-if="error || !posts.length" class="blog-error">
-        <p>Unable to load blog posts. Please check your Medium username or connection.</p>
+        <p>No blog posts yet. Check back soon.</p>
       </div>
 
       <div v-else class="blog-grid">
         <BlogCard
           v-for="(post, i) in posts"
-          :key="post.url"
-          :post="post"
+          :key="post.id"
+          :post="toBlogCardPost(post)"
           :delay="0.1 + i * 0.1"
         />
       </div>
@@ -31,21 +31,26 @@
 <script setup lang="ts">
 useHead({ title: 'Blog | Vilaysack Vorachack' })
 
-const MEDIUM_USERNAME = 'vvilaysack'
-const RSS2JSON = 'https://api.rss2json.com/v1/api.json'
+const client = useSupabaseClient()
 
 const { data, pending, error } = await useAsyncData('blog-posts', async () => {
-  const res = await $fetch<any>(`${RSS2JSON}?rss_url=https://medium.com/feed/@${MEDIUM_USERNAME}`)
-  if (res.status !== 'ok') throw new Error('Failed to fetch')
-  return res.items.slice(0, 6).map((item: any) => ({
-    title: item.title,
-    url: item.link,
-    date: new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-    excerpt: item.description?.replace(/<[^>]+>/g, '').slice(0, 160) + '...',
-    thumbnail: item.thumbnail || null,
-    readTime: `${Math.ceil((item.content?.split(' ').length ?? 500) / 200)} min read`,
-  }))
+  const { data } = await client
+    .from('blog_posts')
+    .select('id, title, slug, excerpt, thumbnail, tags, published_at')
+    .eq('published', true)
+    .order('published_at', { ascending: false })
+  return data ?? []
 })
 
 const posts = computed(() => data.value ?? [])
+
+const toBlogCardPost = (row: any) => ({
+  title: row.title,
+  url: `/blog/${row.slug}`,
+  date: row.published_at
+    ? new Date(row.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+    : '',
+  excerpt: row.excerpt ?? '',
+  thumbnail: row.thumbnail ?? null,
+})
 </script>

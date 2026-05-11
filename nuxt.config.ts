@@ -1,9 +1,23 @@
 export default defineNuxtConfig({
-  devtools: { enabled: true },
-  modules: ['@nuxt/content'],
+  devtools: { enabled: false },
+  modules: ['@nuxt/content', '@nuxtjs/supabase'],
 
-  // SSG mode for Phase 1
   ssr: true,
+
+  supabase: {
+    redirectOptions: {
+      login: '/manage/login',
+      callback: '/manage',
+      exclude: ['/', '/about', '/experiences', '/certifications', '/contributions', '/blog', '/blog/**'],
+    },
+  },
+
+  runtimeConfig: {
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL ?? '',
+      supabaseKey: process.env.SUPABASE_KEY ?? '',
+    },
+  },
 
   app: {
     pageTransition: { name: 'route', mode: 'out-in' },
@@ -31,7 +45,7 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Electrolize&family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+Lao+Looped:wght@300;400;500;600;700&display=swap',
+          href: 'https://fonts.googleapis.com/css2?family=Electrolize&family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+Lao+Looped:wght@300;400;500;600;700&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap',
         },
       ],
     },

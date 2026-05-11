@@ -19,7 +19,7 @@
       <div v-else class="timeline">
         <TimelineItem
           v-for="(exp, i) in experiences"
-          :key="i"
+          :key="exp.id"
           :exp="exp"
           :delay="0.1 + i * 0.15"
         />
@@ -31,9 +31,15 @@
 <script setup lang="ts">
 useHead({ title: 'Experiences | Vilaysack Vorachack' })
 
-const { data, pending, error } = await useAsyncData('experiences', () =>
-  queryContent('data/experiences').findOne()
-)
+const client = useSupabaseClient()
 
-const experiences = computed(() => data.value?.experiences ?? [])
+const { data, pending, error } = await useAsyncData('experiences', async () => {
+  const { data } = await client
+    .from('experiences')
+    .select('*')
+    .order('sort_order', { ascending: true })
+  return data ?? []
+})
+
+const experiences = computed(() => data.value ?? [])
 </script>
