@@ -5,11 +5,7 @@ export default defineNuxtConfig({
   ssr: true,
 
   supabase: {
-    redirectOptions: {
-      login: '/manage/login',
-      callback: '/manage',
-      exclude: ['/', '/about', '/experiences', '/certifications', '/contributions', '/blog', '/blog/**'],
-    },
+    redirect: false,
   },
 
   runtimeConfig: {

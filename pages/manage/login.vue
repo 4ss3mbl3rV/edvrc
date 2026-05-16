@@ -80,9 +80,9 @@ const login = async () => {
   if (err) {
     error.value = err.message
     loading.value = false
-  } else {
-    await navigateTo('/manage')
+    return
   }
+  await navigateTo('/manage')
 }
 </script>
 

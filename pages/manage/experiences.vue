@@ -3,9 +3,18 @@
     <div class="admin-toolbar">
       <div>
         <h1 class="admin-page-title">Experiences</h1>
-        <p class="admin-page-subtitle">{{ rows.length }} entries — drag to reorder</p>
+        <p class="admin-page-subtitle">
+          {{ rows.length }} entries — drag to reorder
+          <span v-if="orderSaving" class="order-saving-indicator">Saving…</span>
+          <span v-else-if="orderError" class="order-error-indicator">{{ orderError }}</span>
+        </p>
       </div>
-      <button class="btn-admin-primary" @click="openModal()">+ Add Experience</button>
+      <div style="display:flex;gap:0.5rem;align-items:center">
+        <button v-if="orderDirty" class="btn-admin-secondary" :disabled="orderSaving" @click="saveOrder">
+          {{ orderSaving ? 'Saving…' : 'Save Order' }}
+        </button>
+        <button class="btn-admin-primary" @click="openModal()">+ Add Experience</button>
+      </div>
     </div>
 
     <div class="admin-table-wrap">
@@ -16,7 +25,7 @@
             <th>Title</th><th>Position</th><th>Period</th><th>Actions</th>
           </tr>
         </thead>
-        <VueDraggable v-model="rows" tag="tbody" handle=".drag-handle" animation="150" @end="saveOrder">
+        <VueDraggable v-model="rows" tag="tbody" handle=".drag-handle" animation="150" @end="orderDirty = true">
           <tr v-for="row in rows" :key="row.id">
             <td>
               <span class="drag-handle" title="Drag to reorder">
@@ -98,6 +107,9 @@ const showModal = ref(false)
 const editing = ref<any>(null)
 const saving = ref(false)
 const saveError = ref('')
+const orderSaving = ref(false)
+const orderError = ref('')
+const orderDirty = ref(false)
 
 const blankForm = () => ({
   title: '', position: '', start_date: '', end_date: 'Present',
@@ -135,9 +147,15 @@ const save = async () => {
 }
 
 const saveOrder = async () => {
-  await client.from('experiences').upsert(
-    rows.value.map((r, i) => ({ id: r.id, sort_order: i }))
+  orderSaving.value = true
+  orderError.value = ''
+  const results = await Promise.all(
+    rows.value.map((r, i) => client.from('experiences').update({ sort_order: i }).eq('id', r.id))
   )
+  const err = results.find(r => r.error)?.error
+  if (err) { orderError.value = err.message }
+  else { orderDirty.value = false }
+  orderSaving.value = false
 }
 
 const { confirm } = useAdminConfirm()

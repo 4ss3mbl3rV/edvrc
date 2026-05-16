@@ -3,9 +3,18 @@
     <div class="admin-toolbar">
       <div>
         <h1 class="admin-page-title">Certifications</h1>
-        <p class="admin-page-subtitle">{{ rows.length }} certifications — drag to reorder</p>
+        <p class="admin-page-subtitle">
+          {{ rows.length }} certifications — drag to reorder
+          <span v-if="orderSaving" class="order-saving-indicator">Saving…</span>
+          <span v-else-if="orderError" class="order-error-indicator">{{ orderError }}</span>
+        </p>
       </div>
-      <button class="btn-admin-primary" @click="openModal()">+ Add Certification</button>
+      <div style="display:flex;gap:0.5rem;align-items:center">
+        <button v-if="orderDirty" class="btn-admin-secondary" :disabled="orderSaving" @click="saveOrder">
+          {{ orderSaving ? 'Saving…' : 'Save Order' }}
+        </button>
+        <button class="btn-admin-primary" @click="openModal()">+ Add Certification</button>
+      </div>
     </div>
 
     <div class="admin-table-wrap">
@@ -16,7 +25,7 @@
             <th>Name</th><th>Issuer</th><th>Category</th><th>Year</th><th>Status</th><th>Actions</th>
           </tr>
         </thead>
-        <VueDraggable v-model="rows" tag="tbody" handle=".drag-handle" animation="150" @end="saveOrder">
+        <VueDraggable v-model="rows" tag="tbody" handle=".drag-handle" animation="150" @end="orderDirty = true">
           <tr v-for="row in rows" :key="row.id">
             <td>
               <span class="drag-handle" title="Drag to reorder">
@@ -67,13 +76,17 @@
           <div class="admin-form-row">
             <div class="admin-form-group">
               <label class="admin-label">Category</label>
-              <select v-model="categoryPreset" class="admin-select" @change="onCategoryPreset">
-                <option value="General">General</option>
-                <option value="Management">Management</option>
-                <option value="Defensive">Defensive</option>
-                <option value="Offensive">Offensive</option>
-                <option value="Other">Other…</option>
-              </select>
+              <AdminSelect
+                v-model="categoryPreset"
+                :options="[
+                  { value: 'General', label: 'General' },
+                  { value: 'Management', label: 'Management' },
+                  { value: 'Defensive', label: 'Defensive' },
+                  { value: 'Offensive', label: 'Offensive' },
+                  { value: 'Other', label: 'Other…' },
+                ]"
+                @change="onCategoryPreset"
+              />
               <input
                 v-if="categoryPreset === 'Other'"
                 v-model="form.category"
@@ -91,10 +104,10 @@
           <div class="admin-form-row">
             <div class="admin-form-group">
               <label class="admin-label">Status</label>
-              <select v-model="form.status" class="admin-select">
-                <option value="ACTIVE">ACTIVE</option>
-                <option value="EXPIRED">EXPIRED</option>
-              </select>
+              <AdminSelect
+                v-model="form.status"
+                :options="[{ value: 'ACTIVE', label: 'ACTIVE' }, { value: 'EXPIRED', label: 'EXPIRED' }]"
+              />
             </div>
             <div class="admin-form-group">
               <label class="admin-label">Expiry (YYYY-MM)</label>
@@ -162,6 +175,9 @@ const showModal = ref(false)
 const editing = ref<any>(null)
 const saving = ref(false)
 const saveError = ref('')
+const orderSaving = ref(false)
+const orderError = ref('')
+const orderDirty = ref(false)
 
 const PRESET_CATEGORIES = ['General', 'Management', 'Defensive', 'Offensive']
 const categoryPreset = ref('General')
@@ -237,11 +253,16 @@ const save = async () => {
   await load()
 }
 
-// Persist drag order to Supabase
 const saveOrder = async () => {
-  await client.from('certifications').upsert(
-    rows.value.map((r, i) => ({ id: r.id, sort_order: i }))
+  orderSaving.value = true
+  orderError.value = ''
+  const results = await Promise.all(
+    rows.value.map((r, i) => client.from('certifications').update({ sort_order: i }).eq('id', r.id))
   )
+  const err = results.find(r => r.error)?.error
+  if (err) { orderError.value = err.message }
+  else { orderDirty.value = false }
+  orderSaving.value = false
 }
 
 const { confirm } = useAdminConfirm()

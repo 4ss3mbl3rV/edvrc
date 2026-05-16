@@ -24,5 +24,8 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@parcel/watcher", "esbuild", "vue-demi"]
   }
 }
