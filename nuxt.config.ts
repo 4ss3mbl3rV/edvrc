@@ -1,8 +1,12 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
-  modules: ['@nuxt/content', '@nuxtjs/supabase'],
+  modules: ['@nuxtjs/supabase'],
 
   ssr: true,
+
+  nitro: {
+    preset: 'cloudflare-pages',
+  },
 
   supabase: {
     redirect: false,
