@@ -123,8 +123,9 @@
 }
 
 .admin-theme-btn:hover {
-  background: var(--bg-card);
-  color: var(--text-primary);
+  background: var(--accent-subtle);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }
 
 .admin-logout-btn:hover {
