@@ -274,6 +274,110 @@ button {
     width: 100%;
 }
 
+/* ── Nav dropdown ──────────────────────────────────────────────────── */
+.nav-item {
+    position: relative;
+}
+
+/* Trigger looks and behaves exactly like a nav-link */
+.nav-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color var(--transition-fast);
+}
+
+.nav-dropdown-trigger::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent-primary);
+    transition: width var(--transition-base);
+}
+
+.nav-item--dropdown:hover .nav-dropdown-trigger,
+.nav-dropdown-trigger.open {
+    color: var(--text-primary);
+}
+
+.nav-item--dropdown:hover .nav-dropdown-trigger::after,
+.nav-dropdown-trigger.open::after {
+    width: 100%;
+}
+
+.nav-dropdown-chevron {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.nav-item--dropdown:hover .nav-dropdown-chevron,
+.nav-dropdown-trigger.open .nav-dropdown-chevron {
+    transform: rotate(180deg);
+}
+
+/* Panel */
+.nav-dropdown-panel {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    min-width: 160px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    padding: 10px 0.35rem 0.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 1001;
+}
+
+.nav-item--dropdown:hover .nav-dropdown-panel,
+.nav-dropdown-panel.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Items */
+.nav-dropdown-item {
+    display: block;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-dropdown-item:hover {
+    background: var(--accent-subtle);
+    color: var(--accent-primary);
+}
+
+.nav-dropdown-item.router-link-active {
+    color: var(--accent-primary);
+    background: var(--accent-subtle);
+}
+
 /* Theme Toggle */
 .theme-toggle {
     width: 40px;
@@ -1864,6 +1968,48 @@ button {
 
     .nav-link::after {
         display: none;
+    }
+
+    /* Mobile dropdown */
+    .nav-item--dropdown {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav-dropdown-panel {
+        position: static;
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
+        box-shadow: none;
+        background: transparent;
+        border: none;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.25s ease;
+        gap: 0;
+    }
+
+    .nav-dropdown-panel.open {
+        transform: none;
+        max-height: 200px;
+    }
+
+    .nav-dropdown-item {
+        font-size: 1.25rem;
+        font-weight: 600;
+        padding: 0.75rem 3rem;
+        text-align: center;
+        border-radius: 12px;
+        color: var(--text-secondary);
+    }
+
+    .nav-dropdown-item:hover,
+    .nav-dropdown-item.router-link-active {
+        background: var(--accent-subtle);
+        color: var(--accent-primary);
     }
 
     .hero-name {
