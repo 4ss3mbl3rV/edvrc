@@ -1,0 +1,6 @@
+name = "portfolio-nuxt"
+compatibility_date = "2025-04-01"
+
+[assets]
+directory = ".output/public"
+not_found_handling = "single-page-application"
