@@ -82,7 +82,7 @@
               <label class="admin-label">Placement</label>
               <AdminSelect
                 v-model="placementPreset"
-                :options="['The Winner', '1st Place', '2nd Place', '3rd Place', 'Other…']"
+                :options="['The Winner', '2nd Place', '3rd Place', 'Other…']"
                 @change="onPlacementPreset"
               />
               <input
@@ -147,8 +147,8 @@ const orderSaving = ref(false)
 const orderError = ref('')
 const orderDirty = ref(false)
 
-const PLACEMENT_PRESETS = ['The Winner', '1st Place', '2nd Place', '3rd Place']
-const placementPreset = ref('1st Place')
+const PLACEMENT_PRESETS = ['The Winner', '2nd Place', '3rd Place']
+const placementPreset = ref('The Winner')
 
 const onPlacementPreset = () => {
   if (placementPreset.value !== 'Other…') form.placement = placementPreset.value
@@ -160,7 +160,7 @@ watch(placementPreset, val => {
 })
 
 const blankForm = () => ({
-  title: '', event: '', date: '', placement: '1st Place',
+  title: '', event: '', date: '', placement: 'The Winner',
   category: 'CTF', description: '', team: '', url: '',
 })
 const form = reactive<Record<string, any>>(blankForm())
@@ -179,9 +179,9 @@ const openModal = (row?: any) => {
   Object.assign(form, blankForm())
   if (row) {
     Object.assign(form, row)
-    placementPreset.value = PLACEMENT_PRESETS.includes(row.placement) ? row.placement : (row.placement ? 'Other…' : '1st Place')
+    placementPreset.value = PLACEMENT_PRESETS.includes(row.placement) ? row.placement : (row.placement ? 'Other…' : 'The Winner')
   } else {
-    placementPreset.value = '1st Place'
+    placementPreset.value = 'The Winner'
   }
   showModal.value = true
 }

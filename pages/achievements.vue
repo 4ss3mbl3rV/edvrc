@@ -67,11 +67,10 @@ const achievements = computed(() => data.value ?? [])
 
 const placementClass = (placement: string) => {
   switch (placement) {
-    case 'The Winner':  return 'placement-winner'
-    case '1st Place':   return 'placement-1st'
-    case '2nd Place':   return 'placement-2nd'
-    case '3rd Place':   return 'placement-3rd'
-    default:            return 'placement-other'
+    case 'The Winner': return 'placement-winner'
+    case '2nd Place':  return 'placement-2nd'
+    case '3rd Place':  return 'placement-3rd'
+    default:           return 'placement-other'
   }
 }
 </script>
@@ -146,14 +145,6 @@ const placementClass = (placement: string) => {
   background: rgba(245, 158, 11, 0.12);
   border-color: rgba(245, 158, 11, 0.35);
   text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
-}
-
-/* 1st — blue (theme accent) */
-.placement-1st {
-  color: var(--accent-primary);
-  background: var(--accent-subtle);
-  border-color: var(--border-hover);
-  text-shadow: 0 0 10px var(--accent-glow);
 }
 
 /* 2nd — silver */
