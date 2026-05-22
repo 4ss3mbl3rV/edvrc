@@ -22,7 +22,7 @@
         <thead>
           <tr>
             <th style="width:36px"></th>
-            <th>Name</th><th>Category</th><th>Status</th><th>Actions</th>
+            <th>Name</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th>
           </tr>
         </thead>
         <VueDraggable v-model="rows" tag="tbody" handle=".drag-handle" animation="150" @end="orderDirty = true">
@@ -42,13 +42,14 @@
                 {{ row.status }}
               </span>
             </td>
+            <td style="color:var(--text-muted);font-size:0.85rem">{{ row.date || '—' }}</td>
             <td style="display:flex;gap:0.5rem">
               <button class="btn-admin-secondary" @click="openModal(row)">Edit</button>
               <button class="btn-admin-danger" @click="deleteRow(row.id)">Delete</button>
             </td>
           </tr>
           <tr v-if="!rows.length">
-            <td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem">No contributions yet.</td>
+            <td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem">No contributions yet.</td>
           </tr>
         </VueDraggable>
       </table>
@@ -72,6 +73,10 @@
               <label class="admin-label">Status</label>
               <AdminSelect v-model="form.status" :options="[{ value: 'Active', label: 'Active' }, { value: 'Completed', label: 'Completed' }]" />
             </div>
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-label">Date</label>
+            <input v-model="form.date" class="admin-input" placeholder="e.g. 2024-11 or 2024" />
           </div>
           <div class="admin-form-group">
             <label class="admin-label">Description</label>
@@ -122,7 +127,7 @@ const orderDirty = ref(false)
 
 const blankForm = () => ({
   name: '', category: '', status: 'Active', description: '',
-  tags: [] as string[], github_url: '', demo_url: '',
+  date: '', tags: [] as string[], github_url: '', demo_url: '',
 })
 const form = reactive<Record<string, any>>(blankForm())
 

@@ -1345,6 +1345,13 @@ button {
     z-index: 1;
 }
 
+.contribution-date {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
 .contribution-links {
     display: flex;
     gap: 1rem;
