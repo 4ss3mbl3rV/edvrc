@@ -21,7 +21,6 @@
 
     <template v-else-if="form.title !== undefined">
       <div v-if="saveError" class="admin-error-msg" style="margin-bottom:1rem">{{ saveError }}</div>
-      <div v-if="saveSuccess" style="background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--accent-primary);padding:0.6rem 0.85rem;border-radius:6px;font-size:0.825rem;margin-bottom:1rem">Saved successfully.</div>
 
       <div class="admin-card">
         <div class="admin-form-group">
@@ -65,7 +64,6 @@ const client = useSupabaseClient()
 
 const saving = ref(false)
 const saveError = ref('')
-const saveSuccess = ref(false)
 
 const form = reactive({
   title: '',
@@ -92,7 +90,6 @@ const extractFirstImage = (markdown: string): string => {
 const save = async () => {
   saving.value = true
   saveError.value = ''
-  saveSuccess.value = false
   const thumbnail = form.thumbnail || extractFirstImage(form.content)
   const { error } = await client.from('blog_posts').update({
     title: form.title,
@@ -102,11 +99,9 @@ const save = async () => {
     thumbnail,
     tags: form.tags,
   }).eq('id', route.params.id as string)
-  if (!error) form.thumbnail = thumbnail
   saving.value = false
   if (error) { saveError.value = error.message; return }
-  saveSuccess.value = true
-  setTimeout(() => { saveSuccess.value = false }, 3000)
+  await navigateTo('/manage/blog')
 }
 
 const publish = async () => {
@@ -117,8 +112,9 @@ const publish = async () => {
     published_at: form.published_at ?? new Date().toISOString(),
     thumbnail,
   }).eq('id', route.params.id as string)
-  if (!error) { form.published = true; form.thumbnail = thumbnail }
   saving.value = false
+  if (error) { saveError.value = error.message; return }
+  await navigateTo('/manage/blog')
 }
 
 const unpublish = async () => {

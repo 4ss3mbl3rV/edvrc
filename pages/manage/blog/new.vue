@@ -88,7 +88,7 @@ const savePost = async (published: boolean) => {
   }).select('id').single()
   saving.value = false
   if (error) { saveError.value = error.message; return }
-  await navigateTo(`/manage/blog/${data.id}`)
+  await navigateTo('/manage/blog')
 }
 
 const saveDraft = () => savePost(false)

@@ -53,7 +53,12 @@
     <!-- Modal -->
     <div v-if="showModal" class="admin-modal-overlay" @click.self="showModal = false">
       <div class="admin-modal" style="max-width:640px">
-        <h2 class="admin-modal-title">{{ editing ? 'Edit Experience' : 'Add Experience' }}</h2>
+        <div class="admin-modal-header">
+          <h2 class="admin-modal-title">{{ editing ? 'Edit Experience' : 'Add Experience' }}</h2>
+          <button class="admin-modal-close" type="button" @click="showModal = false">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
         <form @submit.prevent="save">
           <div class="admin-form-group">
             <label class="admin-label">Company / Organization *</label>
