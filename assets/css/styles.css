@@ -563,11 +563,17 @@ button {
    Main Content & Pages
    ============================================ */
 
+.layout-root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 .main-content {
+    flex: 1;
     position: relative;
     z-index: 1;
     padding-top: 70px;
-    min-height: calc(100vh - 70px);
 }
 
 .page {
@@ -576,7 +582,6 @@ button {
     transform: translateY(20px);
     transition: opacity var(--transition-base), transform var(--transition-base);
     padding: 4rem 2rem;
-    min-height: calc(100vh - 70px - 80px);
 }
 
 .page.active {

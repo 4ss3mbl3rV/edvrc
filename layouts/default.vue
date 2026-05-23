@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="layout-root">
     <TheNav />
     <main class="main-content">
       <slot />
