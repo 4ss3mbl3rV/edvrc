@@ -93,19 +93,124 @@ const renderedContent = computed(() =>
   border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
 }
 
-.blog-post-body { color: var(--text-secondary); line-height: 1.8; font-size: 1rem; font-family: var(--font-content); }
-.blog-post-body :deep(h2),
-.blog-post-body :deep(h3) { color: var(--text-primary); margin-top: 2rem; margin-bottom: 0.75rem; }
+.blog-post-body {
+  color: var(--text-secondary);
+  line-height: 1.85;
+  font-size: 1rem;
+  font-family: var(--font-content);
+}
+
+.blog-post-body :deep(p) {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.blog-post-body :deep(p:last-child) { margin-bottom: 0; }
+
+.blog-post-body :deep(h1) {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 2.5rem 0 1rem;
+  line-height: 1.25;
+}
+
+.blog-post-body :deep(h2) {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 2.25rem 0 0.85rem;
+  line-height: 1.3;
+}
+
+.blog-post-body :deep(h3) {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 1.75rem 0 0.65rem;
+}
+
+.blog-post-body :deep(h4) {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 1.5rem 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.blog-post-body :deep(ul),
+.blog-post-body :deep(ol) {
+  padding-left: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.blog-post-body :deep(li) { margin-bottom: 0.45rem; }
+.blog-post-body :deep(li:last-child) { margin-bottom: 0; }
+
+.blog-post-body :deep(blockquote) {
+  border-left: 3px solid var(--accent-primary);
+  padding: 0.6rem 1.1rem;
+  margin: 1.75rem 0;
+  color: var(--text-muted);
+  font-style: italic;
+  background: var(--accent-subtle);
+  border-radius: 0 6px 6px 0;
+}
+
+.blog-post-body :deep(hr) {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 2.25rem 0;
+}
+
+.blog-post-body :deep(strong) { color: var(--text-primary); font-weight: 600; }
+
 .blog-post-body :deep(pre) {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 1.25rem;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
   overflow-x: auto;
   font-family: var(--font-mono);
   font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.65;
 }
-.blog-post-body :deep(code) { font-family: var(--font-mono); font-size: 0.875em; color: var(--accent-primary); }
-.blog-post-body :deep(a) { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 3px; }
-.blog-post-body :deep(img) { max-width: 100%; border-radius: 8px; margin: 1.5rem 0; }
+
+.blog-post-body :deep(pre code) {
+  background: none;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+.blog-post-body :deep(code) {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--accent-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 0.15em 0.45em;
+}
+
+.blog-post-body :deep(a) {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.15s;
+}
+
+.blog-post-body :deep(a:hover) { opacity: 0.75; }
+
+.blog-post-body :deep(img) {
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin: 1.75rem 0;
+  display: block;
+}
 </style>

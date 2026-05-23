@@ -435,6 +435,13 @@ onBeforeUnmount(() => editor.value?.destroy())
   min-height: 100%;
 }
 
+.admin-editor-content :deep(p) {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+}
+
+.admin-editor-content :deep(p:last-child) { margin-bottom: 0; }
+
 .admin-editor-content :deep(.ProseMirror p.is-editor-empty:first-child::before) {
   content: attr(data-placeholder);
   color: var(--text-muted);
