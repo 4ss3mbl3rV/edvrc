@@ -2005,9 +2005,45 @@ button {
         align-items: center;
     }
 
+    /* Match trigger size/style exactly to other nav links */
+    .nav-dropdown-trigger {
+        font-size: 1.5rem;
+        font-weight: 600;
+        padding: 1rem 3rem;
+        border: 1px solid transparent;
+        border-radius: 12px;
+        color: var(--text-primary);
+        justify-content: center;
+        width: auto;
+    }
+
+    /* Hide desktop underline on mobile */
+    .nav-dropdown-trigger::after,
+    .nav-dropdown-trigger.open::after {
+        display: none !important;
+    }
+
+    /* Match hover/active accent to other nav links */
+    .nav-item--dropdown:hover .nav-dropdown-trigger,
+    .nav-dropdown-trigger.open {
+        color: var(--accent-primary);
+        background: var(--accent-subtle);
+        border-color: var(--border-color);
+    }
+
+    /* Prevent desktop :hover from opening the panel on touch */
+    .nav-item--dropdown:hover .nav-dropdown-panel {
+        transform: none !important;
+        max-height: 0;
+    }
+
+    .nav-item--dropdown:hover .nav-dropdown-panel.open {
+        max-height: 300px;
+    }
+
     .nav-dropdown-panel {
         position: static;
-        transform: none;
+        transform: none !important;
         opacity: 1;
         pointer-events: auto;
         box-shadow: none;
@@ -2016,13 +2052,15 @@ button {
         padding: 0;
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.25s ease;
+        transition: max-height 0.3s ease;
         gap: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .nav-dropdown-panel.open {
-        transform: none;
-        max-height: 200px;
+        max-height: 300px;
     }
 
     .nav-dropdown-item {
@@ -2032,6 +2070,8 @@ button {
         text-align: center;
         border-radius: 12px;
         color: var(--text-secondary);
+        white-space: normal;
+        width: auto;
     }
 
     .nav-dropdown-item:hover,
