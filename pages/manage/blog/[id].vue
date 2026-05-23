@@ -19,7 +19,7 @@
 
     <div v-if="pending" style="color:var(--text-muted);padding:2rem 0">Loading post…</div>
 
-    <template v-else-if="form.title !== undefined">
+    <template v-else-if="postData">
       <div v-if="saveError" class="admin-error-msg" style="margin-bottom:1rem">{{ saveError }}</div>
 
       <div class="admin-card">
@@ -76,11 +76,14 @@ const form = reactive({
   published_at: null as string | null,
 })
 
-const { pending } = await useAsyncData(`edit-post-${route.params.id}`, async () => {
+const { data: postData, pending } = await useAsyncData(`edit-post-${route.params.id}`, async () => {
   const { data } = await client.from('blog_posts').select('*').eq('id', route.params.id as string).single()
-  if (data) Object.assign(form, { ...data, tags: data.tags ?? [] })
   return data
 })
+
+watch(postData, (data) => {
+  if (data) Object.assign(form, { ...data, tags: data.tags ?? [] })
+}, { immediate: true })
 
 const extractFirstImage = (markdown: string): string => {
   const match = markdown.match(/!\[.*?\]\((https?:\/\/[^)]+)\)/)
