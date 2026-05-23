@@ -20,6 +20,10 @@
           </div>
         </header>
 
+        <div v-if="post.thumbnail" class="blog-post-thumbnail">
+          <img :src="post.thumbnail" :alt="post.title" />
+        </div>
+
         <div class="blog-post-body" v-html="renderedContent" />
       </article>
     </div>
@@ -91,6 +95,21 @@ const renderedContent = computed(() =>
   margin-bottom: 2.5rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
+}
+
+.blog-post-thumbnail {
+  margin-bottom: 2.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  max-height: 420px;
+}
+
+.blog-post-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .blog-post-body {
