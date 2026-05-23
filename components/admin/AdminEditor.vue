@@ -249,12 +249,25 @@ onBeforeUnmount(() => editor.value?.destroy())
   border-radius: 8px;
   overflow: hidden;
   background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  height: 65vh;
+  min-height: 500px;
 }
 
 .admin-editor-tabs {
   display: flex;
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.admin-editor-visual {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .admin-editor-tab {
@@ -283,6 +296,7 @@ onBeforeUnmount(() => editor.value?.destroy())
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-secondary);
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .admin-editor-toolbar button,
@@ -336,6 +350,11 @@ onBeforeUnmount(() => editor.value?.destroy())
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-card);
   animation: slideDown 0.15s ease both;
+  flex-shrink: 0;
+}
+
+.admin-editor-img-error {
+  flex-shrink: 0;
 }
 
 @keyframes slideDown {
@@ -394,17 +413,26 @@ onBeforeUnmount(() => editor.value?.destroy())
 
 /* TipTap content area */
 .admin-editor-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
   padding: 1rem;
-  min-height: 300px;
   color: var(--text-primary);
   font-size: 0.9rem;
   line-height: 1.75;
   font-family: var(--font-content);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
 }
+
+.admin-editor-content::-webkit-scrollbar        { width: 5px; }
+.admin-editor-content::-webkit-scrollbar-track  { background: transparent; }
+.admin-editor-content::-webkit-scrollbar-thumb  { background: var(--border-color); border-radius: 99px; }
+.admin-editor-content::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
 
 .admin-editor-content :deep(.ProseMirror) {
   outline: none;
-  min-height: 260px;
+  min-height: 100%;
 }
 
 .admin-editor-content :deep(.ProseMirror p.is-editor-empty:first-child::before) {
@@ -441,9 +469,16 @@ onBeforeUnmount(() => editor.value?.destroy())
 }
 
 /* Markdown textarea */
+.admin-editor-markdown {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .admin-editor-textarea {
+  flex: 1;
   width: 100%;
-  min-height: 340px;
   padding: 1rem;
   background: transparent;
   border: none;
@@ -451,9 +486,17 @@ onBeforeUnmount(() => editor.value?.destroy())
   font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.75;
-  resize: vertical;
+  resize: none;
   box-sizing: border-box;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
 }
+
+.admin-editor-textarea::-webkit-scrollbar        { width: 5px; }
+.admin-editor-textarea::-webkit-scrollbar-track  { background: transparent; }
+.admin-editor-textarea::-webkit-scrollbar-thumb  { background: var(--border-color); border-radius: 99px; }
+.admin-editor-textarea::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
 
 .admin-editor-textarea:focus { outline: none; }
 
