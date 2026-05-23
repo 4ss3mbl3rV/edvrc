@@ -277,13 +277,14 @@
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity var(--transition-fast);
+  transition: filter var(--transition-fast), transform var(--transition-fast);
   text-decoration: none;
   font-family: var(--font-body);
 }
 
 .btn-admin-primary:hover {
-  opacity: 0.85;
+  filter: brightness(0.88);
+  transform: translateY(-1px);
 }
 
 .btn-admin-secondary {
