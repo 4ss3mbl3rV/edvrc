@@ -272,19 +272,20 @@
   padding: 0.5rem 1rem;
   background: var(--accent-primary);
   color: var(--bg-primary);
-  border: none;
+  border: 1px solid var(--accent-primary);
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: filter var(--transition-fast), transform var(--transition-fast);
+  transition: all var(--transition-fast);
   text-decoration: none;
   font-family: var(--font-body);
 }
 
 .btn-admin-primary:hover {
-  filter: brightness(0.88);
-  transform: translateY(-1px);
+  background: var(--accent-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
 }
 
 .btn-admin-secondary {
