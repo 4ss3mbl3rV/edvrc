@@ -2,8 +2,8 @@
   <div>
     <div class="admin-toolbar">
       <div>
-        <h1 class="admin-page-title">Footer Settings</h1>
-        <p class="admin-page-subtitle">Manage copyright text and social links</p>
+        <h1 class="admin-page-title">Branding</h1>
+        <p class="admin-page-subtitle">Manage footer text and social links</p>
       </div>
     </div>
 
@@ -115,7 +115,7 @@
 import { VueDraggable } from 'vue-draggable-plus'
 
 definePageMeta({ layout: 'admin', middleware: 'auth' })
-useHead({ title: 'Footer Settings — Admin' })
+useHead({ title: 'Branding — Admin' })
 
 const client = useSupabaseClient()
 
