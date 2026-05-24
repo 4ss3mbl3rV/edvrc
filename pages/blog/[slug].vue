@@ -245,12 +245,13 @@ const renderedContent = computed(() =>
 }
 
 .blog-post-body :deep(figure.blog-figure) {
-  margin: 1.75rem 0;
-  display: block;
+  margin: 1.75rem auto;
+  display: table;
 }
 
 .blog-post-body :deep(figure.blog-figure img) {
   margin: 0 0 0.5rem;
+  display: block;
 }
 
 .blog-post-body :deep(figcaption.blog-figure-caption) {
