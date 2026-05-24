@@ -33,6 +33,17 @@
 <script setup lang="ts">
 import { marked } from 'marked'
 
+marked.use({
+  renderer: {
+    image({ href, title, text }: { href: string; title?: string | null; text: string }): string {
+      const img = `<img src="${href}" alt="${text || ''}" />`
+      return title
+        ? `<figure class="blog-figure">${img}<figcaption class="blog-figure-caption">${title}</figcaption></figure>`
+        : img
+    },
+  },
+})
+
 const route = useRoute()
 const client = useSupabaseClient()
 
@@ -231,5 +242,22 @@ const renderedContent = computed(() =>
   border: 1px solid var(--border-color);
   margin: 1.75rem 0;
   display: block;
+}
+
+.blog-post-body :deep(figure.blog-figure) {
+  margin: 1.75rem 0;
+  display: block;
+}
+
+.blog-post-body :deep(figure.blog-figure img) {
+  margin: 0 0 0.5rem;
+}
+
+.blog-post-body :deep(figcaption.blog-figure-caption) {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  line-height: 1.5;
 }
 </style>

@@ -137,6 +137,32 @@
         <button type="button" class="admin-editor-img-url-cancel" @click="showImgUrl = false; imgUrl = ''">✕</button>
       </div>
 
+      <!-- Image caption bar (appears when an image node is selected) -->
+      <Transition name="caption-slide">
+        <div v-if="showCaptionBar" class="admin-editor-caption-bar">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--accent-primary);opacity:0.7">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span class="admin-editor-caption-label">Caption</span>
+          <input
+            v-model="captionValue"
+            class="admin-editor-caption-input"
+            placeholder="Add a caption that will appear below the image…"
+            @input="updateCaption"
+            @keydown.enter.prevent="editor?.commands.focus()"
+            @keydown.escape="captionValue = ''; updateCaption(); editor?.commands.focus()"
+          />
+          <button
+            v-if="captionValue"
+            type="button"
+            class="admin-editor-caption-clear"
+            title="Remove caption"
+            @click="captionValue = ''; updateCaption(); editor?.commands.focus()"
+          >✕</button>
+        </div>
+      </Transition>
+
       <div v-if="imgError" class="admin-editor-img-error">{{ imgError }}</div>
 
       <EditorContent :editor="editor" class="admin-editor-content" />
@@ -175,6 +201,10 @@ const imgError = ref('')
 const showImgUrl = ref(false)
 const imgUrl = ref('')
 
+// Caption state
+const showCaptionBar = ref(false)
+const captionValue = ref('')
+
 const editor = useEditor({
   extensions: [
     StarterKit,
@@ -187,7 +217,25 @@ const editor = useEditor({
     rawMarkdown.value = md
     emit('update:modelValue', md)
   },
+  onSelectionUpdate: ({ editor }) => {
+    const isImg = editor.isActive('image')
+    showCaptionBar.value = isImg
+    if (isImg) {
+      const node = (editor.state.selection as any).node
+      captionValue.value = node?.attrs?.title ?? ''
+    }
+  },
+  onBlur: ({ event }) => {
+    const related = (event as FocusEvent)?.relatedTarget as HTMLElement | null
+    if (related?.classList.contains('admin-editor-caption-input') ||
+        related?.classList.contains('admin-editor-caption-clear')) return
+    showCaptionBar.value = false
+  },
 })
+
+const updateCaption = () => {
+  editor.value?.commands.updateAttributes('image', { title: captionValue.value || null })
+}
 
 watch(() => props.modelValue, (val) => {
   if (!val || val === rawMarkdown.value) return
@@ -353,6 +401,63 @@ onBeforeUnmount(() => editor.value?.destroy())
   flex-shrink: 0;
 }
 
+/* Caption bar */
+.admin-editor-caption-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.admin-editor-caption-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.admin-editor-caption-input {
+  flex: 1;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 0.3rem 0.6rem;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.admin-editor-caption-input:focus { border-color: var(--accent-primary); }
+.admin-editor-caption-input::placeholder { color: var(--text-muted); font-style: italic; }
+
+.admin-editor-caption-clear {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.15rem 0.3rem;
+  line-height: 1;
+  transition: color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.admin-editor-caption-clear:hover { color: #ff5050; }
+
+/* Caption bar transition */
+.caption-slide-enter-active,
+.caption-slide-leave-active { transition: opacity 0.15s ease, transform 0.15s ease; }
+.caption-slide-enter-from,
+.caption-slide-leave-to { opacity: 0; transform: translateY(-4px); }
+
 .admin-editor-img-error {
   flex-shrink: 0;
 }
@@ -467,12 +572,17 @@ onBeforeUnmount(() => editor.value?.destroy())
   height: auto;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  margin: 0.75rem 0;
+  margin: 0.75rem 0 0.35rem;
   display: block;
 }
 .admin-editor-content :deep(img.ProseMirror-selectednode) {
   outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
+}
+
+/* Show caption hint below selected image in editor */
+.admin-editor-content :deep(img[title].ProseMirror-selectednode) {
+  margin-bottom: 0;
 }
 
 /* Markdown textarea */
