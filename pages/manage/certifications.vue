@@ -102,7 +102,11 @@
             </div>
             <div class="admin-form-group">
               <label class="admin-label">Year</label>
-              <input v-model.number="form.year" type="number" class="admin-input" placeholder="2024" />
+              <div class="admin-number-wrap">
+                <input v-model.number="form.year" type="number" class="admin-input" placeholder="2024" />
+                <button type="button" class="admin-number-btn" @click="form.year = (form.year || new Date().getFullYear()) - 1">−</button>
+                <button type="button" class="admin-number-btn" @click="form.year = (form.year || new Date().getFullYear()) + 1">+</button>
+              </div>
             </div>
           </div>
 
